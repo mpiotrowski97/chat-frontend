@@ -57,7 +57,19 @@
           </div>
         </div>
       </div>
-      <div class="w-1/6">3</div>
+      <div class="w-1/6 px-4">
+        <h3 class="text-gray-600 font-bold text-3xl">
+          Members
+        </h3>
+        <hr>
+        <div class="border-0 rounded">
+          <ul class="border-2 rounded mt-3">
+            <li class="p-4 border-b-2 flex-row flex items-center">John Wick <span class="text-xs bg-green-400 rounded px-1 ml-1">Online</span></li>
+            <li class="p-4 border-b-2 flex-row flex items-center">Paweł Kukiz <span class="text-xs bg-orange-400 rounded px-1 ml-1">Offline</span></li>
+            <li class="p-4 border-b-2 flex-row flex items-center">Grzegorz Schetyna <span class="text-xs bg-orange-400 rounded px-1 ml-1">Offline</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
