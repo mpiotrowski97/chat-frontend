@@ -11,7 +11,7 @@
     </div>
 
     <div class="mt-4 flex flex-row">
-      <div class="w-1/6 px-6">
+      <div class="w-1/6 px-4">
         <h3 class="text-gray-600 font-bold text-3xl">
           Channels
         </h3>
@@ -24,7 +24,38 @@
           </ul>
         </div>
       </div>
-      <div class="w-4/6">
+      <div class="w-4/6 h-full px-4">
+        <h3 class="text-gray-600 font-bold text-3xl">
+          Messages
+        </h3>
+        <hr>
+        <div class="mt-3 h-64 overflow-y-scroll">
+          <div class="text-gray-500 p-6 border-2 rounded flex justify-between mb-3">
+            <div>
+              <div class="font-bold text-gray-700 text-lg">
+                John Wick
+              </div>
+              <div class="text-lg">
+                <p>Feel free to talk about anything</p>
+              </div>
+            </div>
+            <div class="text-right flex flex-col justify-between">
+              <div>
+                @john
+              </div>
+              <div>
+                11:49:32 pm
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <label for="message" class="text-gray-500 mb-2">@john</label>
+          <textarea name="message" id="message" class="border-2 p-2 rounded" placeholder="Enter message"></textarea>
+          <div class="text-right">
+            <button class="bg-blue-500 py-1 px-2 rounded text-white mt-2">Send</button>
+          </div>
+        </div>
       </div>
       <div class="w-1/6">3</div>
     </div>
