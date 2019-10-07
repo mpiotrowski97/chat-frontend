@@ -1,28 +1,25 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div class="py-5 px-8 bg-blue-300 flex justify-between items-center">
+      <div>
+        <a href="#" class="text-white font-medium text-xl">Vue Chat</a>
+      </div>
+      <div class="flex flex-row">
+        <div class="border-r-2 border-blue-500 px-3 text-blue-500">John Wick</div>
+        <a href="#" class="px-3 text-white">Logout</a>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
