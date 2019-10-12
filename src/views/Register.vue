@@ -2,7 +2,7 @@
     <div class="flex items-center justify-center h-full w-full bg-blue-400 text-gray-700">
         <div class="w-2/6">
             <validation-observer v-slot="{ invalid }">
-                <form>
+                <form @submit.prevent="onSubmit">
                     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
                         <div class="mb-4">
                             <validation-provider rules="required" v-slot="{ errors }">
@@ -56,7 +56,7 @@
                         <div class="flex items-center justify-between">
                             <button class="bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
                                     :class="{ 'disabled': invalid }"
-                                    type="button"
+                                    type="submit"
                                     :disabled="invalid">
                                 Sign Up
                             </button>
@@ -70,6 +70,8 @@
 </template>
 
 <script>
+  import ApiService from "../services/api.service";
+
   export default {
     name: "Register",
     data() {
@@ -81,12 +83,17 @@
           passwordConfirmation: ''
         }
       }
+    },
+    methods: {
+      onSubmit() {
+        ApiService.store('users', this.user)
+          .then(() => {
+            this.$router.push({name: 'login'})
+          })
+      }
     }
   }
 </script>
 
 <style scoped>
-    .disabled {
-        @apply .bg-blue-300 .cursor-not-allowed
-    }
 </style>
