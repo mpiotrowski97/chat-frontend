@@ -30,7 +30,8 @@
                 </h3>
                 <hr>
                 <div class="mt-3 h-64 overflow-y-scroll">
-                    <div v-for="message of messages" :key="message" class="text-gray-500 p-6 border-2 rounded flex justify-between mb-3">
+                    <div v-for="message of messages" :key="message"
+                         class="text-gray-500 p-6 border-2 rounded flex justify-between mb-3">
                         <div>
                             <div class="font-bold text-gray-700 text-lg">
                                 John Wick
@@ -54,7 +55,8 @@
                     <textarea name="message" id="message" class="border-2 p-2 rounded"
                               placeholder="Enter message" v-model="message"></textarea>
                     <div class="text-right">
-                        <button class="bg-blue-500 py-1 px-2 rounded text-white mt-2" @click="sendMessage()">Send</button>
+                        <button class="bg-blue-500 py-1 px-2 rounded text-white mt-2" @click="sendMessage()">Send
+                        </button>
                     </div>
                 </div>
             </div>
@@ -65,12 +67,15 @@
                 <hr>
                 <div class="border-0 rounded">
                     <ul class="border-2 rounded mt-3">
-                        <li class="p-4 border-b-2 flex-row flex items-center">John Wick <span
-                                class="text-xs bg-green-400 rounded px-1 ml-1">Online</span></li>
-                        <li class="p-4 border-b-2 flex-row flex items-center">Paweł Kukiz <span
-                                class="text-xs bg-orange-400 rounded px-1 ml-1">Offline</span></li>
-                        <li class="p-4 flex-row flex items-center">Grzegorz Schetyna <span
-                                class="text-xs bg-orange-400 rounded px-1 ml-1">Offline</span></li>
+                        <li v-for="user of users" :key="user.id" class="p-4 border-b-2 flex-row flex items-center">
+                            {{ user.name }}
+                            <span v-if="user.online" class="text-xs bg-green-400 rounded px-1 ml-1">
+                                Online
+                            </span>
+                            <span v-if="!user.online" class="text-xs bg-orange-400 rounded px-1 ml-1">
+                                Offline
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -79,7 +84,10 @@
 </template>
 
 <script>
-  import {LOGOUT} from "../store/actions.type";
+  import {LOGOUT, USERS_FETCH} from "../store/actions.type";
+  import {mapGetters} from "vuex";
+  import jwtService from '../services/jwt.service';
+  import {SET_USERS} from "../store/mutations.type";
 
   export default {
     name: "Chat",
@@ -91,11 +99,26 @@
       }
     },
     mounted() {
-      this.connection = new WebSocket("ws://localhost:8002");
 
-      this.connection.onmessage = (event) => {
-        this.messages.push(event.data);
-      }
+
+
+      this.$store.dispatch(USERS_FETCH)
+        .then(({data}) => {
+          this.$store.commit(SET_USERS, data['hydra:member']);
+          const connection = new WebSocket("ws://localhost:8002");
+
+          connection.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            this.$store.commit(data.type, data.payload);
+          };
+
+          connection.onopen = () => {
+            connection.send(JSON.stringify({
+              type: 'userAuthorization',
+              token: jwtService.getToken()
+            }));
+          };
+        });
     },
     methods: {
       sendMessage() {
@@ -107,6 +130,9 @@
         this.$store.dispatch(LOGOUT);
         this.$router.push({name: 'login'});
       }
+    },
+    computed: {
+      ...mapGetters(['users'])
     }
   }
 </script>

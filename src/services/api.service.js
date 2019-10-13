@@ -3,6 +3,9 @@ import axios from "axios";
 import jwtService from "./jwt.service";
 
 const ApiService = {
+  get: (resource, id = '') => {
+    return axios.get(`${API_URL}/${resource}/${id}`);
+  },
   store: async (resource, data) => {
     const response = await fetch(`${API_URL}/${resource}`, {
       method: 'POST',
@@ -17,7 +20,7 @@ const ApiService = {
   setHeader: () => {
     axios.defaults.headers.common[
       "Authorization"
-      ] = `Token ${jwtService.getToken()}`;
+      ] = `Bearer ${jwtService.getToken()}`;
   },
 };
 
