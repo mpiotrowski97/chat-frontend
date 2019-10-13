@@ -6,7 +6,7 @@
             </div>
             <div class="flex flex-row">
                 <div class="border-r-2 border-blue-500 px-3 text-blue-500">John Wick</div>
-                <a href="#" class="px-3 text-white">Logout</a>
+                <a href="#" class="px-3 text-white" @click.prevent="onLogout">Logout</a>
             </div>
         </div>
 
@@ -79,6 +79,8 @@
 </template>
 
 <script>
+  import {LOGOUT} from "../store/actions.type";
+
   export default {
     name: "Chat",
     data() {
@@ -100,6 +102,10 @@
         this.messages.push(this.message);
         this.connection.send(this.message);
         this.message = '';
+      },
+      onLogout() {
+        this.$store.dispatch(LOGOUT);
+        this.$router.push({name: 'login'});
       }
     }
   }
