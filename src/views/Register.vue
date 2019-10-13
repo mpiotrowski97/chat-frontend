@@ -4,6 +4,7 @@
             <validation-observer v-slot="{ invalid }">
                 <form @submit.prevent="onSubmit">
                     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+                        <notifications-list v-if="notifications" :notifications="notifications"></notifications-list>
                         <div class="mb-4">
                             <validation-provider rules="required" v-slot="{ errors }">
                                 <label class="block text-grey-darker text-sm font-bold mb-2" for="name">
@@ -71,9 +72,12 @@
 
 <script>
   import ApiService from "../services/api.service";
+  import {NOTIFICATIONS_PUSH} from "../store/mutations.type";
+  import NotificationsList from "../components/notifications/NotificationsList";
 
   export default {
     name: "Register",
+    components: {NotificationsList},
     data() {
       return {
         user: {
@@ -88,6 +92,7 @@
       onSubmit() {
         ApiService.store('users', this.user)
           .then(() => {
+            this.$store.commit(NOTIFICATIONS_PUSH, {id: 'register-success', message: 'Your account has been created!', type: 'success'});
             this.$router.push({name: 'login'})
           })
       }
