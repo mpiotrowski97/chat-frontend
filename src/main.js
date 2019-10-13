@@ -2,10 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router';
 import store from './store';
-import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+import {ValidationProvider, ValidationObserver, extend} from "vee-validate";
 import {confirmed, email, required} from "vee-validate/dist/rules";
 
 import '@/assets/css/tailwind.css'
+import {CHECK_AUTH} from "./store/actions.type";
 
 extend('required', {
   ...required,
@@ -27,8 +28,12 @@ Vue.config.productionTip = false;
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 
+router.beforeEach((to, from, next) =>
+  Promise.all([store.dispatch(CHECK_AUTH)]).then(next)
+);
+
 new Vue({
-  render: h => h(App),
   router,
-  store
+  store,
+  render: h => h(App)
 }).$mount('#app');

@@ -74,6 +74,7 @@
   import ApiService from "../services/api.service";
   import {NOTIFICATIONS_PUSH} from "../store/mutations.type";
   import NotificationsList from "../components/notifications/NotificationsList";
+  import {mapGetters} from "vuex";
 
   export default {
     name: "Register",
@@ -96,6 +97,9 @@
             this.$router.push({name: 'login'})
           })
       }
+    },
+    computed: {
+      ...mapGetters(['notifications'])
     }
   }
 </script>
