@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router';
+import store from './store';
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {confirmed, email, required} from "vee-validate/dist/rules";
 
@@ -28,5 +29,6 @@ Vue.component('ValidationObserver', ValidationObserver);
 
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store
 }).$mount('#app');
