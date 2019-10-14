@@ -84,9 +84,8 @@
 </template>
 
 <script>
-  import {LOGOUT, USERS_FETCH} from "../store/actions.type";
+  import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, LOGOUT, USERS_FETCH} from "../store/actions.type";
   import {mapGetters} from "vuex";
-  import jwtService from '../services/jwt.service';
   import {SET_USERS} from "../store/mutations.type";
 
   export default {
@@ -99,25 +98,10 @@
       }
     },
     mounted() {
-
-
-
       this.$store.dispatch(USERS_FETCH)
         .then(({data}) => {
           this.$store.commit(SET_USERS, data['hydra:member']);
-          const connection = new WebSocket("ws://localhost:8002");
-
-          connection.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            this.$store.commit(data.type, data.payload);
-          };
-
-          connection.onopen = () => {
-            connection.send(JSON.stringify({
-              type: 'userAuthorization',
-              token: jwtService.getToken()
-            }));
-          };
+          this.$store.dispatch(CONNECTION_CONNECT);
         });
     },
     methods: {
@@ -127,6 +111,7 @@
         this.message = '';
       },
       onLogout() {
+        this.$store.dispatch(CONNECTION_DISCONNECT);
         this.$store.dispatch(LOGOUT);
         this.$router.push({name: 'login'});
       }

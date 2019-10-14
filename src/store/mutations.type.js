@@ -6,3 +6,5 @@ export const SET_USERS = 'setUsers';
 export const ONLINE_USERS = 'onlineUsers';
 export const ONLINE_USER = 'onlineUser';
 export const OFFLINE_USER = 'offlineUser';
+export const CONNECTION_SET_CONNECTION = 'connectionSetConnection';
+export const CONNECTION_REMOVE_CONNECTION = 'connectionRemoveConnection';
