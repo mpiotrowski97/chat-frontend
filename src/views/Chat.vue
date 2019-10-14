@@ -84,7 +84,13 @@
 </template>
 
 <script>
-  import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, LOGOUT, USERS_FETCH} from "../store/actions.type";
+  import {
+    CONNECTION_CONNECT,
+    CONNECTION_DISCONNECT,
+    CONNECTION_SEND_MESSAGE,
+    LOGOUT,
+    USERS_FETCH
+  } from "../store/actions.type";
   import {mapGetters} from "vuex";
   import {SET_USERS} from "../store/mutations.type";
 
@@ -92,9 +98,7 @@
     name: "Chat",
     data() {
       return {
-        messages: [],
         message: '',
-        connection: null
       }
     },
     mounted() {
@@ -106,8 +110,7 @@
     },
     methods: {
       sendMessage() {
-        this.messages.push(this.message);
-        this.connection.send(this.message);
+        this.$store.dispatch(CONNECTION_SEND_MESSAGE, {type: 'newMessage', message: this.message});
         this.message = '';
       },
       onLogout() {

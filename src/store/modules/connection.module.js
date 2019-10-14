@@ -1,4 +1,4 @@
-import {CONNECTION_CONNECT, CONNECTION_DISCONNECT} from "../actions.type";
+import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, CONNECTION_SEND_MESSAGE} from "../actions.type";
 import jwtService from "../../services/jwt.service";
 import {WEBSOCKET_URL} from "../../common/config";
 import {CONNECTION_REMOVE_CONNECTION, CONNECTION_SET_CONNECTION} from "../mutations.type";
@@ -40,6 +40,9 @@ const connectionModule = {
     },
     [CONNECTION_DISCONNECT](context) {
       context.commit(CONNECTION_REMOVE_CONNECTION);
+    },
+    [CONNECTION_SEND_MESSAGE](context, message) {
+      context.state.connection.send(JSON.stringify(message));
     }
   },
 };
