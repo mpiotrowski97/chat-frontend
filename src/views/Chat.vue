@@ -30,7 +30,7 @@
                 </h3>
                 <hr>
                 <div class="mt-3 overflow-y-scroll" style="height: 600px">
-                    <div v-for="message of messages" :key="message.message"
+                    <div v-for="message of messages" :key="message.id"
                          class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
                         <div>
                             <div class="font-bold text-gray-700 text-base">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <label for="message" class="text-gray-500 mb-2">@john</label>
+<!--                    <label for="message" class="text-gray-500 mb-2">@john</label>-->
                     <textarea name="message" id="message" class="border-2 p-2 rounded"
                               placeholder="Enter message" v-model="message"></textarea>
                     <div class="text-right">
@@ -107,7 +107,11 @@
     },
     methods: {
       sendMessage() {
-        this.$store.dispatch(CONNECTION_SEND_MESSAGE, {type: 'newMessage', message: this.message});
+        this.$store.dispatch(CONNECTION_SEND_MESSAGE, {
+          type: 'newMessage',
+          message: this.message,
+          author: this.user.name
+        });
         this.message = '';
       },
       onLogout() {
