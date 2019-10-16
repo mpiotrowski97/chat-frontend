@@ -18,9 +18,7 @@
                 <hr>
                 <div class="border-0 rounded">
                     <ul class="border-2 rounded mt-3">
-                        <li class="p-6 border-b-2 bg-blue-600 text-white"># General</li>
-                        <li class="p-6 border-b-2"># Weapons</li>
-                        <li class="p-6"># Combat</li>
+                        <li class="p-6 border-b-2" v-for="channel of channels" :key="channel.id"># {{channel.name}}</li>
                     </ul>
                 </div>
             </div>
@@ -82,6 +80,7 @@
 
 <script>
   import {
+    CHANNELS_FETCH,
     CONNECTION_CONNECT,
     CONNECTION_DISCONNECT,
     CONNECTION_SEND_MESSAGE,
@@ -99,6 +98,7 @@
       }
     },
     mounted() {
+      this.$store.dispatch(CHANNELS_FETCH);
       this.$store.dispatch(USERS_FETCH)
         .then(({data}) => {
           this.$store.commit(SET_USERS, data['hydra:member']);
@@ -121,7 +121,7 @@
       }
     },
     computed: {
-      ...mapGetters(['users', 'messages', 'user'])
+      ...mapGetters(['users', 'messages', 'user', 'channels'])
     }
   }
 </script>

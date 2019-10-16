@@ -10,3 +10,4 @@ export const OFFLINE_USER = 'offlineUser';
 export const CONNECTION_SET_CONNECTION = 'connectionSetConnection';
 export const CONNECTION_REMOVE_CONNECTION = 'connectionRemoveConnection';
 export const MESSAGES_ADD = 'messagesAdd';
+export const CHANNELS_SET = 'channelsSet';
