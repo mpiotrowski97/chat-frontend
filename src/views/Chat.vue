@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div class="h-full">
         <div class="py-5 px-8 bg-blue-300 flex justify-between items-center">
             <div>
                 <a href="#" class="text-white font-medium text-xl">Vue Chat</a>
             </div>
             <div class="flex flex-row">
-                <div class="border-r-2 border-blue-500 px-3 text-blue-500">John Wick</div>
+                <div class="border-r-2 border-blue-500 px-3 text-blue-500">{{ user.name }}</div>
                 <a href="#" class="px-3 text-white" @click.prevent="onLogout">Logout</a>
             </div>
         </div>
@@ -29,29 +29,26 @@
                     Messages
                 </h3>
                 <hr>
-                <div class="mt-3 h-64 overflow-y-scroll">
-                    <div v-for="message of messages" :key="message"
-                         class="text-gray-500 p-6 border-2 rounded flex justify-between mb-3">
+                <div class="mt-3 overflow-y-scroll" style="height: 600px">
+                    <div v-for="message of messages" :key="message.id"
+                         class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
                         <div>
-                            <div class="font-bold text-gray-700 text-lg">
-                                John Wick
+                            <div class="font-bold text-gray-700 text-base">
+                                {{ message.author }}
                             </div>
-                            <div class="text-lg">
-                                <p>{{ message }}</p>
+                            <div class="text-sm">
+                                <p>{{ message.message }}</p>
                             </div>
                         </div>
                         <div class="text-right flex flex-col justify-between">
                             <div>
-                                @john
-                            </div>
-                            <div>
-                                11:49:32 pm
+                                {{ message.createdAt }}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <label for="message" class="text-gray-500 mb-2">@john</label>
+<!--                    <label for="message" class="text-gray-500 mb-2">@john</label>-->
                     <textarea name="message" id="message" class="border-2 p-2 rounded"
                               placeholder="Enter message" v-model="message"></textarea>
                     <div class="text-right">
@@ -84,7 +81,13 @@
 </template>
 
 <script>
-  import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, LOGOUT, USERS_FETCH} from "../store/actions.type";
+  import {
+    CONNECTION_CONNECT,
+    CONNECTION_DISCONNECT,
+    CONNECTION_SEND_MESSAGE,
+    LOGOUT,
+    USERS_FETCH
+  } from "../store/actions.type";
   import {mapGetters} from "vuex";
   import {SET_USERS} from "../store/mutations.type";
 
@@ -92,9 +95,7 @@
     name: "Chat",
     data() {
       return {
-        messages: [],
         message: '',
-        connection: null
       }
     },
     mounted() {
@@ -106,8 +107,11 @@
     },
     methods: {
       sendMessage() {
-        this.messages.push(this.message);
-        this.connection.send(this.message);
+        this.$store.dispatch(CONNECTION_SEND_MESSAGE, {
+          type: 'newMessage',
+          message: this.message,
+          author: this.user.name
+        });
         this.message = '';
       },
       onLogout() {
@@ -117,7 +121,7 @@
       }
     },
     computed: {
-      ...mapGetters(['users'])
+      ...mapGetters(['users', 'messages', 'user'])
     }
   }
 </script>
