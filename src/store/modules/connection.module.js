@@ -17,7 +17,9 @@ const connectionModule = {
       state.connection = connection;
     },
     [CONNECTION_REMOVE_CONNECTION](state) {
-      state.connection.close();
+      if (null !== state.connection) {
+        state.connection.close();
+      }
     }
   },
   actions: {

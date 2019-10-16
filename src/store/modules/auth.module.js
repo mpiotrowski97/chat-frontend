@@ -1,14 +1,18 @@
 import jwtService from "../../services/jwt.service";
 import {CHECK_AUTH, LOGIN, LOGOUT} from "../actions.type";
-import {NOTIFICATIONS_PUSH, PURGE_AUTH, SET_AUTH} from "../mutations.type";
+import {NOTIFICATIONS_PUSH, PURGE_AUTH, SET_AUTH, SET_USER_DATA} from "../mutations.type";
 import ApiService from "../../services/api.service";
 import authService from "../../services/auth.service";
 
 const authModule = {
   state: {
-    isAuthenticated: !!jwtService.getToken()
+    isAuthenticated: !!jwtService.getToken(),
+    user: {}
   },
   getters: {
+    user(state) {
+      return state.user;
+    },
     isAuthenticated(state) {
       return state.isAuthenticated;
     }
@@ -17,6 +21,9 @@ const authModule = {
     [SET_AUTH](state, token) {
       state.isAuthenticated = true;
       jwtService.saveToken(token);
+    },
+    [SET_USER_DATA](state, user) {
+      state.user = user;
     },
     [PURGE_AUTH](state) {
       state.isAuthenticated = false;
@@ -29,6 +36,10 @@ const authModule = {
         authService.login(credentials)
           .then(({data}) => {
             context.commit(SET_AUTH, data.token);
+            ApiService.get('users/current')
+              .then(({data}) => {
+                context.commit(SET_USER_DATA, data);
+              })
             resolve();
           })
           .catch(() => {
@@ -42,7 +53,14 @@ const authModule = {
     [CHECK_AUTH](context) {
       if (jwtService.getToken()) {
         ApiService.setHeader();
-        context.commit(SET_AUTH, jwtService.getToken());
+        ApiService.get('users/current')
+          .then(({data}) => {
+            context.commit(SET_AUTH, jwtService.getToken());
+            context.commit(SET_USER_DATA, data);
+          })
+          .catch(() => {
+            context.commit(PURGE_AUTH);
+          })
       } else {
         context.commit(PURGE_AUTH);
       }
