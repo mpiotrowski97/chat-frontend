@@ -1,20 +1,27 @@
 import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, CONNECTION_SEND_MESSAGE} from "../actions.type";
 import jwtService from "../../services/jwt.service";
 import {WEBSOCKET_URL} from "../../common/config";
-import {CONNECTION_REMOVE_CONNECTION, CONNECTION_SET_CONNECTION} from "../mutations.type";
+import {CONNECTION_REMOVE_CONNECTION, CONNECTION_SET_CONNECTION, CONNECTION_SET_ERROR} from "../mutations.type";
 
 const connectionModule = {
   state: {
-    connection: null
+    connection: null,
+    connectionError: false
   },
   getters: {
     connection(state) {
       return state.connection;
+    },
+    connectionError(state) {
+      return state.connectionError;
     }
   },
   mutations: {
     [CONNECTION_SET_CONNECTION](state, connection) {
       state.connection = connection;
+    },
+    [CONNECTION_SET_ERROR](state, status) {
+      state.connectionError = status;
     },
     [CONNECTION_REMOVE_CONNECTION](state) {
       if (null !== state.connection) {
@@ -25,6 +32,10 @@ const connectionModule = {
   actions: {
     [CONNECTION_CONNECT](context) {
       const connection = new WebSocket(WEBSOCKET_URL);
+
+      connection.onerror = () => {
+        context.commit(CONNECTION_SET_ERROR, true);
+      };
 
       connection.onmessage = (event) => {
         const data = JSON.parse(event.data);
