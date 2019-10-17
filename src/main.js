@@ -29,7 +29,9 @@ Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 
 router.beforeEach((to, from, next) =>
-  Promise.all([store.dispatch(CHECK_AUTH)]).then(next)
+  Promise.all([store.dispatch(CHECK_AUTH)]).then(next).catch(() => {
+    router.push({name: 'auth.login'})
+  })
 );
 
 new Vue({
