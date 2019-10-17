@@ -28,7 +28,10 @@
                 <hr>
                 <div class="border-0 rounded">
                     <ul class="border-2 rounded mt-3">
-                        <li class="p-6 border-b-2" v-for="channel of channels" :key="channel.id"># {{channel.name}}</li>
+                        <li class="p-6 border-b-2 cursor-pointer" v-for="channel of channels" :key="channel.id"
+                            :class="{ 'selected-channel': channel.id === currentChannel.id}"
+                            @click="changeChannel(channel)"># {{channel.name}}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,10 +45,10 @@
                          class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
                         <div>
                             <div class="font-bold text-gray-700 text-base">
-                                {{ message.author }}
+                                {{ message.user.name }}
                             </div>
                             <div class="text-sm">
-                                <p>{{ message.message }}</p>
+                                <p>{{ message.body }}</p>
                             </div>
                         </div>
                         <div class="text-right flex flex-col justify-between">
@@ -56,7 +59,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col">
-<!--                    <label for="message" class="text-gray-500 mb-2">@john</label>-->
+                    <!--                    <label for="message" class="text-gray-500 mb-2">@john</label>-->
                     <textarea name="message" id="message" class="border-2 p-2 rounded"
                               placeholder="Enter message" v-model="message"></textarea>
                     <div class="text-right">
@@ -90,6 +93,7 @@
 
 <script>
   import {
+    CHANNEL_CHANGE,
     CHANNELS_FETCH,
     CONNECTION_CONNECT,
     CONNECTION_DISCONNECT,
@@ -108,11 +112,13 @@
       }
     },
     mounted() {
-      this.$store.dispatch(CHANNELS_FETCH);
       this.$store.dispatch(USERS_FETCH)
         .then(({data}) => {
           this.$store.commit(SET_USERS, data['hydra:member']);
-          this.$store.dispatch(CONNECTION_CONNECT);
+          this.$store.dispatch(CHANNELS_FETCH)
+            .then(() => {
+              this.$store.dispatch(CONNECTION_CONNECT);
+            });
         });
     },
     methods: {
@@ -128,14 +134,19 @@
         this.$store.dispatch(CONNECTION_DISCONNECT);
         this.$store.dispatch(LOGOUT);
         this.$router.push({name: 'login'});
+      },
+      changeChannel(channel) {
+        this.$store.dispatch(CHANNEL_CHANGE, channel);
       }
     },
     computed: {
-      ...mapGetters(['users', 'messages', 'user', 'channels', 'connectionError'])
+      ...mapGetters(['users', 'messages', 'user', 'channels', 'connectionError', 'currentChannel'])
     }
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+    .selected-channel {
+        @apply .bg-blue-400 .font-bold .text-white;
+    }
 </style>

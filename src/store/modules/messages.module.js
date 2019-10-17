@@ -1,4 +1,4 @@
-import {MESSAGES_ADD} from "../mutations.type";
+import {MESSAGES_ADD, MESSAGES_CLEAR} from "../mutations.type";
 
 const messagesModule = {
   state: {
@@ -12,6 +12,9 @@ const messagesModule = {
   mutations: {
     [MESSAGES_ADD](state, message) {
       state.messages = [...state.messages, message];
+    },
+    [MESSAGES_CLEAR](state) {
+      state.messages = [];
     }
   },
   actions: {

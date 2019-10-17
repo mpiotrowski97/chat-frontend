@@ -45,7 +45,8 @@ const connectionModule = {
       connection.onopen = () => {
         connection.send(JSON.stringify({
           type: 'userAuthorization',
-          token: jwtService.getToken()
+          token: jwtService.getToken(),
+          channel: context.getters.currentChannel
         }));
       };
 

@@ -7,3 +7,4 @@ export const CONNECTION_CONNECT = 'connectionConnect';
 export const CONNECTION_DISCONNECT = 'connectionDisconnect';
 export const CONNECTION_SEND_MESSAGE = 'connectionSendMessage';
 export const CHANNELS_FETCH = 'channelsFetch';
+export const CHANNEL_CHANGE = 'channelChange';
