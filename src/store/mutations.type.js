@@ -13,4 +13,5 @@ export const MESSAGES_ADD = 'messagesAdd';
 export const CHANNELS_SET = 'channelsSet';
 export const CONNECTION_SET_ERROR = 'connectionSetError';
 export const CHANNEL_SET_CURRENT = 'channelSetCurrent';
-export const MESSAGES_CLEAR = 'messages_clear';
+export const MESSAGES_CLEAR = 'messagesClear';
+export const MESSAGES_CHANGE = 'messagesChange';

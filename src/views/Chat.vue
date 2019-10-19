@@ -40,12 +40,13 @@
                     Messages
                 </h3>
                 <hr>
-                <div class="mt-3 overflow-y-scroll" style="height: 600px">
+                <div ref="messages" class="mt-3 overflow-y-scroll" style="height: 600px">
                     <div v-for="message of messages" :key="message.id"
                          class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
                         <div>
                             <div class="font-bold text-gray-700 text-base">
                                 {{ message.user.name }}
+                                <span v-if="(+message.user.id) === (+user.id)">(me)</span>
                             </div>
                             <div class="text-sm">
                                 <p>{{ message.body }}</p>
@@ -118,6 +119,7 @@
           this.$store.dispatch(CHANNELS_FETCH)
             .then(() => {
               this.$store.dispatch(CONNECTION_CONNECT);
+              this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
             });
         });
     },
@@ -136,7 +138,9 @@
         this.$router.push({name: 'login'});
       },
       changeChannel(channel) {
-        this.$store.dispatch(CHANNEL_CHANGE, channel);
+        this.$store.dispatch(
+          CHANNEL_CHANGE, channel).then(() => this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+        );
       }
     },
     computed: {

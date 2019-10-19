@@ -1,5 +1,5 @@
 import {CHANNEL_SET_CURRENT, CHANNELS_SET, MESSAGES_CLEAR} from "../mutations.type";
-import {CHANNEL_CHANGE, CHANNELS_FETCH, CONNECTION_SEND_MESSAGE} from "../actions.type";
+import {CHANNEL_CHANGE, CHANNELS_FETCH, CONNECTION_SEND_MESSAGE, MESSAGES_FETCH} from "../actions.type";
 import ApiService from "../../services/api.service";
 
 const channelsModule = {
@@ -26,16 +26,22 @@ const channelsModule = {
   },
   actions: {
     [CHANNELS_FETCH](context) {
-      return ApiService.get('channels')
-        .then(({data}) => {
-          context.commit(CHANNELS_SET, data['hydra:member']);
-          context.commit(CHANNEL_SET_CURRENT, data['hydra:member'][0]);
-        });
+      return new Promise((resolve) => {
+        ApiService.get('channels')
+          .then(({data}) => {
+            context.commit(CHANNELS_SET, data['hydra:member']);
+            context.commit(CHANNEL_SET_CURRENT, data['hydra:member'][0]);
+            context.dispatch(MESSAGES_FETCH, data['hydra:member'][0]).then(() => resolve());
+          });
+      })
     },
     [CHANNEL_CHANGE](context, channel) {
-      context.commit(CHANNEL_SET_CURRENT, channel);
-      context.commit(MESSAGES_CLEAR);
-      context.dispatch(CONNECTION_SEND_MESSAGE, {type: 'channelChange', channel})
+      return new Promise(resolve => {
+        context.commit(CHANNEL_SET_CURRENT, channel);
+        context.commit(MESSAGES_CLEAR);
+        context.dispatch(CONNECTION_SEND_MESSAGE, {type: 'channelChange', channel});
+        context.dispatch(MESSAGES_FETCH, channel).then(() => resolve());
+      });
     }
   }
 };
