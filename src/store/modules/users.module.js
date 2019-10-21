@@ -52,8 +52,9 @@ const usersModule = {
     }
   },
   actions: {
-    [USERS_FETCH]() {
-      return ApiService.get('users');
+    [USERS_FETCH](context) {
+      return ApiService.get('users')
+        .then(({data}) => context.commit(SET_USERS, data['hydra:member']));
     }
   },
 };

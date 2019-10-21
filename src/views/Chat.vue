@@ -1,91 +1,22 @@
 <template>
     <div class="h-full relative">
-        <div v-if="connectionError" class="w-full h-full absolute top-0 flex justify-center items-center">
-            <div class="w-full h-full bg-black opacity-50 z-10 fixed">
-            </div>
-            <div class="w-1/2 h-32 bg-white z-20 py-5 text-center flex justify-center items-center">
-                <p>
-                    Something went wrong. Please try again later!
-                </p>
-            </div>
+        <div v-if="isLoading" class="w-full h-full flex justify-center items-center">
+            <loader></loader>
         </div>
+        <div v-if="!isLoading">
+            <chat-connection-error></chat-connection-error>
 
-        <div class="py-5 px-8 bg-blue-300 flex justify-between items-center">
-            <div>
-                <a href="#" class="text-white font-medium text-xl">Vue Chat</a>
-            </div>
-            <div class="flex flex-row">
-                <div class="border-r-2 border-blue-500 px-3 text-blue-500">{{ user.name }}</div>
-                <a href="#" class="px-3 text-white" @click.prevent="onLogout">Logout</a>
-            </div>
-        </div>
+            <chat-header></chat-header>
 
-        <div class="mt-4 flex flex-row">
-            <div class="w-1/6 px-4">
-                <h3 class="text-gray-600 font-bold text-3xl">
-                    Channels
-                </h3>
-                <hr>
-                <div class="border-0 rounded">
-                    <ul class="border-2 rounded mt-3">
-                        <li class="p-6 border-b-2 cursor-pointer" v-for="channel of channels" :key="channel.id"
-                            :class="{ 'selected-channel': channel.id === currentChannel.id}"
-                            @click="changeChannel(channel)"># {{channel.name}}
-                        </li>
-                    </ul>
+            <div class="mt-4 flex flex-row">
+
+                <chat-channels></chat-channels>
+
+                <div class="w-4/6 h-full px-4">
+                    <chat-messages></chat-messages>
                 </div>
-            </div>
-            <div class="w-4/6 h-full px-4">
-                <h3 class="text-gray-600 font-bold text-3xl">
-                    Messages
-                </h3>
-                <hr>
-                <div ref="messages" class="mt-3 overflow-y-scroll" style="height: 600px">
-                    <div v-for="message of messages" :key="message.id"
-                         class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
-                        <div>
-                            <div class="font-bold text-gray-700 text-base">
-                                {{ message.user.name }}
-                                <span v-if="(+message.user.id) === (+user.id)">(me)</span>
-                            </div>
-                            <div class="text-sm">
-                                <p>{{ message.body }}</p>
-                            </div>
-                        </div>
-                        <div class="text-right flex flex-col justify-between">
-                            <div>
-                                {{ message.createdAt }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col">
-                    <!--                    <label for="message" class="text-gray-500 mb-2">@john</label>-->
-                    <textarea name="message" id="message" class="border-2 p-2 rounded"
-                              placeholder="Enter message" v-model="message"></textarea>
-                    <div class="text-right">
-                        <button class="bg-blue-500 py-1 px-2 rounded text-white mt-2" @click="sendMessage()">Send
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="w-1/6 px-4">
-                <h3 class="text-gray-600 font-bold text-3xl">
-                    Members
-                </h3>
-                <hr>
-                <div class="border-0 rounded">
-                    <ul class="border-2 rounded mt-3">
-                        <li v-for="user of users" :key="user.id" class="p-4 border-b-2 flex-row flex items-center">
-                            {{ user.name }}
-                            <span v-if="user.online" class="text-xs bg-green-400 rounded px-1 ml-1">
-                                Online
-                            </span>
-                            <span v-if="!user.online" class="text-xs bg-orange-400 rounded px-1 ml-1">
-                                Offline
-                            </span>
-                        </li>
-                    </ul>
+                <div class="w-1/6 px-4">
+                    <chat-members></chat-members>
                 </div>
             </div>
         </div>
@@ -94,63 +25,43 @@
 
 <script>
   import {
-    CHANNEL_CHANGE,
     CHANNELS_FETCH,
     CONNECTION_CONNECT,
-    CONNECTION_DISCONNECT,
-    CONNECTION_SEND_MESSAGE,
-    LOGOUT,
     USERS_FETCH
   } from "../store/actions.type";
   import {mapGetters} from "vuex";
-  import {SET_USERS} from "../store/mutations.type";
+  import Loader from "../components/Loader";
+  import ChatHeader from "../components/ChatHeader";
+  import ChatChannels from "../components/ChatChannels";
+  import ChatMembers from "../components/ChatMembers";
+  import ChatConnectionError from "../components/ChatConnectionError";
+  import ChatMessages from "../components/ChatMessages";
 
   export default {
     name: "Chat",
+    components: {ChatMessages, ChatConnectionError, ChatMembers, ChatChannels, ChatHeader, Loader},
     data() {
       return {
-        message: '',
+        isLoading: false
       }
     },
     mounted() {
+      this.isLoading = true;
       this.$store.dispatch(USERS_FETCH)
-        .then(({data}) => {
-          this.$store.commit(SET_USERS, data['hydra:member']);
+        .then(() => {
           this.$store.dispatch(CHANNELS_FETCH)
             .then(() => {
               this.$store.dispatch(CONNECTION_CONNECT);
-              this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+              this.isLoading = false;
             });
         });
     },
-    methods: {
-      sendMessage() {
-        this.$store.dispatch(CONNECTION_SEND_MESSAGE, {
-          type: 'newMessage',
-          message: this.message,
-          author: this.user.name
-        });
-        this.message = '';
-      },
-      onLogout() {
-        this.$store.dispatch(CONNECTION_DISCONNECT);
-        this.$store.dispatch(LOGOUT);
-        this.$router.push({name: 'login'});
-      },
-      changeChannel(channel) {
-        this.$store.dispatch(
-          CHANNEL_CHANGE, channel).then(() => this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-        );
-      }
-    },
     computed: {
-      ...mapGetters(['users', 'messages', 'user', 'channels', 'connectionError', 'currentChannel'])
+      ...mapGetters(['users', 'user'])
     }
   }
 </script>
 
-<style scoped lang="less">
-    .selected-channel {
-        @apply .bg-blue-400 .font-bold .text-white;
-    }
+<style scoped>
+
 </style>

@@ -15,3 +15,4 @@ export const CONNECTION_SET_ERROR = 'connectionSetError';
 export const CHANNEL_SET_CURRENT = 'channelSetCurrent';
 export const MESSAGES_CLEAR = 'messagesClear';
 export const MESSAGES_CHANGE = 'messagesChange';
+export const MESSAGES_CHANGE_LOADING = 'messagesChangeLoading';
