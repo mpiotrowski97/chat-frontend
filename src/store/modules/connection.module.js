@@ -1,7 +1,12 @@
 import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, CONNECTION_SEND_MESSAGE} from "../actions.type";
 import jwtService from "../../services/jwt.service";
 import {WEBSOCKET_URL} from "../../common/config";
-import {CONNECTION_REMOVE_CONNECTION, CONNECTION_SET_CONNECTION, CONNECTION_SET_ERROR} from "../mutations.type";
+import {
+  CONNECTION_ERROR,
+  CONNECTION_REMOVE_CONNECTION,
+  CONNECTION_SET_CONNECTION,
+  CONNECTION_SET_ERROR
+} from "../mutations.type";
 
 const connectionModule = {
   state: {
@@ -27,7 +32,10 @@ const connectionModule = {
       if (null !== state.connection) {
         state.connection.close();
       }
-    }
+    },
+    [CONNECTION_ERROR](state) {
+      state.connectionError = true;
+    },
   },
   actions: {
     [CONNECTION_CONNECT](context) {
