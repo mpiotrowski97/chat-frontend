@@ -47,14 +47,13 @@
     },
     mounted() {
       this.isLoading = true;
-      this.$store.dispatch(USERS_FETCH)
-        .then(() => {
-          this.$store.dispatch(CHANNELS_FETCH)
-            .then(() => {
-              this.$store.dispatch(CONNECTION_CONNECT);
-              this.isLoading = false;
-            });
-        });
+
+      const usersPromise = this.$store.dispatch(USERS_FETCH);
+      const channelsPromise = this.$store.dispatch(CHANNELS_FETCH);
+
+      Promise.all([usersPromise, channelsPromise]).then(() => {
+        this.isLoading = false;
+      })
     },
     computed: {
       ...mapGetters(['users', 'user'])

@@ -35,11 +35,8 @@ const authModule = {
       return new Promise((resolve) => {
         authService.login(credentials)
           .then(({data}) => {
-            context.commit(SET_AUTH, data.token);
-            ApiService.get('users/current')
-              .then(({data}) => {
-                context.commit(SET_USER_DATA, data);
-              })
+            context.commit(SET_AUTH, data.jwtToken);
+            context.commit(SET_USER_DATA, data);
             resolve();
           })
           .catch(() => {
@@ -53,7 +50,7 @@ const authModule = {
     [CHECK_AUTH](context) {
       if (jwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.get('users/current')
+        ApiService.get('current-user')
           .then(({data}) => {
             context.commit(SET_AUTH, jwtService.getToken());
             context.commit(SET_USER_DATA, data);

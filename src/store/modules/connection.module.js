@@ -1,6 +1,8 @@
 import {CONNECTION_CONNECT, CONNECTION_DISCONNECT, CONNECTION_SEND_MESSAGE} from "../actions.type";
 import jwtService from "../../services/jwt.service";
 import {WEBSOCKET_URL} from "../../common/config";
+import SockJS from 'sockjs';
+
 import {
   CONNECTION_ERROR,
   CONNECTION_REMOVE_CONNECTION,
@@ -39,26 +41,7 @@ const connectionModule = {
   },
   actions: {
     [CONNECTION_CONNECT](context) {
-      const connection = new WebSocket(WEBSOCKET_URL);
-
-      connection.onerror = () => {
-        context.commit(CONNECTION_SET_ERROR, true);
-      };
-
-      connection.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        context.commit(data.type, data.payload);
-      };
-
-      connection.onopen = () => {
-        connection.send(JSON.stringify({
-          type: 'userAuthorization',
-          token: jwtService.getToken(),
-          channel: context.getters.currentChannel
-        }));
-      };
-
-      context.commit(CONNECTION_SET_CONNECTION, connection);
+      const socket = new SockJS("/chat");
     },
     [CONNECTION_DISCONNECT](context) {
       context.commit(CONNECTION_REMOVE_CONNECTION);

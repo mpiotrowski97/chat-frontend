@@ -1,10 +1,12 @@
 <template>
     <div class="py-5 px-8 bg-blue-300 flex justify-between items-center">
         <div>
-            <a href="#" class="text-white font-medium text-xl">Vue Chat</a>
+            <a href="#" class="text-white font-medium text-xl">Chat</a>
         </div>
         <div class="flex flex-row">
-            <div class="border-r-2 border-blue-500 px-3 text-blue-500">{{ user.name }}</div>
+            <div class="border-r-2 border-blue-500 px-3 text-blue-500">
+                {{ user.firstName }} {{ user.lastName }}
+            </div>
             <a href="#" class="px-3 text-white" @click.prevent="onLogout">Logout</a>
         </div>
     </div>

@@ -12,7 +12,7 @@
                      class="text-gray-500 text-xs p-4 border-2 rounded flex justify-between mb-3">
                     <div>
                         <div class="font-bold text-gray-700 text-base">
-                            {{ message.user.name }}
+                            {{ message.user.firstName }} {{ message.user.lastName }}
                             <span v-if="(+message.user.id) === (+user.id)">(me)</span>
                         </div>
                         <div class="text-sm">

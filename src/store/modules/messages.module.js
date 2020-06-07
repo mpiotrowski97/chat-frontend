@@ -34,7 +34,7 @@ const messagesModule = {
       context.commit(MESSAGES_CHANGE_LOADING, true);
       return ApiService.get(`channels/${channel.id}/messages`)
         .then(({data}) => {
-          context.commit(MESSAGES_CHANGE, data['hydra:member']);
+          context.commit(MESSAGES_CHANGE, data);
           context.commit(MESSAGES_CHANGE_LOADING, false);
         });
     }

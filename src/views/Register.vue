@@ -7,13 +7,25 @@
                         <notifications-list v-if="notifications" :notifications="notifications"></notifications-list>
                         <div class="mb-4">
                             <validation-provider rules="required" v-slot="{ errors }">
-                                <label class="block text-grey-darker text-sm font-bold mb-2" for="name">
-                                    Name
+                                <label class="block text-grey-darker text-sm font-bold mb-2" for="first-name">
+                                    First name
                                 </label>
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                                        :class="{ 'border-red-500': errors[0] }"
-                                       id="name"
-                                       type="text" placeholder="Name" v-model="user.name">
+                                       id="first-name"
+                                       type="text" placeholder="First name" v-model="user.firstName">
+                                <p class="text-red-500 text-xs italic pt-3" v-if="errors[0]">{{ errors[0] }}</p>
+                            </validation-provider>
+                        </div>
+                        <div class="mb-4">
+                            <validation-provider rules="required" v-slot="{ errors }">
+                                <label class="block text-grey-darker text-sm font-bold mb-2" for="last-name">
+                                    Last name
+                                </label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+                                       :class="{ 'border-red-500': errors[0] }"
+                                       id="last-name"
+                                       type="text" placeholder="Last name" v-model="user.lastName">
                                 <p class="text-red-500 text-xs italic pt-3" v-if="errors[0]">{{ errors[0] }}</p>
                             </validation-provider>
                         </div>
@@ -82,8 +94,8 @@
     data() {
       return {
         user: {
-          name: '',
-          email: '',
+          firstName: '',
+          lastName: '',
           password: '',
           passwordConfirmation: ''
         }
@@ -91,7 +103,7 @@
     },
     methods: {
       onSubmit() {
-        ApiService.store('users', this.user)
+        ApiService.store('register', this.user)
           .then(() => {
             this.$store.commit(NOTIFICATIONS_PUSH, {id: 'register-success', message: 'Your account has been created!', type: 'success'});
             this.$router.push({name: 'login'})

@@ -3,7 +3,7 @@ import * as axios from "axios";
 
 const authService = {
   login: (credentials) => {
-    return axios.post(`${API_URL}/login_check`, credentials);
+    return axios.post(`${API_URL}/login`, credentials);
   }
 };
 

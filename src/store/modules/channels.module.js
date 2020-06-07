@@ -29,9 +29,9 @@ const channelsModule = {
       return new Promise((resolve) => {
         ApiService.get('channels')
           .then(({data}) => {
-            context.commit(CHANNELS_SET, data['hydra:member']);
-            context.commit(CHANNEL_SET_CURRENT, data['hydra:member'][0]);
-            context.dispatch(MESSAGES_FETCH, data['hydra:member'][0]).then(() => resolve());
+            context.commit(CHANNELS_SET, data);
+            context.commit(CHANNEL_SET_CURRENT, data[0]);
+            context.dispatch(MESSAGES_FETCH, data[0]).then(() => resolve());
           });
       })
     },

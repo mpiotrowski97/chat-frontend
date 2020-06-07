@@ -13,7 +13,7 @@
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                                        :class="{ 'border-red-500':errors[0] }"
                                        id="email"
-                                       type="text" placeholder="Email" v-model="credentials.username">
+                                       type="text" placeholder="Email" v-model="credentials.email">
                                 <p class="text-red-500 text-xs italic pt-3" v-if="errors[0]">{{ errors[0] }}</p>
                             </validation-provider>
                         </div>
@@ -56,7 +56,7 @@
     data() {
       return {
         credentials: {
-          username: '',
+          email: '',
           password: ''
         }
       }

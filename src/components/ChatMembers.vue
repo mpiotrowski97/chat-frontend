@@ -7,7 +7,7 @@
         <div class="border-0 rounded">
             <ul class="border-2 rounded mt-3">
                 <li v-for="user of users" :key="user.id" class="p-4 border-b-2 flex-row flex items-center">
-                    {{ user.name }}
+                    {{ user.firstName }} {{ user.lastName }}
                     <span v-if="user.online" class="text-xs bg-green-400 rounded px-1 ml-1">
                                 Online
                             </span>
